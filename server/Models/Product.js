@@ -13,6 +13,11 @@ const productSchema = new mongoose.Schema({
     required: [true, 'السعر مطلوب'],
     min: [0, 'السعر لا يمكن أن يكون سالباً'],
   },
+  
+oldPrice: {
+  type: Number,
+  min: [0, 'السعر لا يمكن أن يكون سالباً'],
+},
   oldPrice: {
     type: Number,
     min: [0, 'السعر القديم لا يمكن أن يكون سالباً'],

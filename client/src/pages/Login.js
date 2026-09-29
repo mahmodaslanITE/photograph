@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const API_URL = `${import.meta.env.VITE_API_URL}/products`;
-
+const API_URL = `${process.env.REACT_APP_API_URL}/auth/login`;
 function Login() {
   const navigate = useNavigate();
 

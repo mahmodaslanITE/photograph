@@ -6,7 +6,8 @@ import ProductCard from '../components/ProductCard';
 import AddProductModal from '../components/AddProductModal';
 
 // ✅ المنفذ الموحّد
-const API_URL = `${import.meta.env.VITE_API_URL}/products`;
+const API_URL = `${process.env.REACT_APP_API_URL}/products`;
+console.log('🌐 API_URL:', API_URL);
 
 const Products = () => {
   // ===== قراءة الفئة من URL =====

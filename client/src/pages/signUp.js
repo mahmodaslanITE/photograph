@@ -96,7 +96,7 @@ function Signup() {
       email: form.email.trim().toLowerCase(),
       password: form.password,
     };
-    const API_URL = `${import.meta.env.VITE_API_URL}/products`;
+    const API_URL = `${process.env.REACT_APP_API_URL}/auth/register`;
 
     try {
       const response = await fetch(API_URL, {

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { buildTelegramLink } from '../utils/telegram';
 
 // ✅ المنفذ الموحّد
-const API_BASE = 'http://localhost:4998/api';
+const API_BASE = `${process.env.REACT_APP_API_URL}/api`;
 
 const ProductCard = ({ product, onDelete, onUpdate, onEdit }) => {
   const navigate = useNavigate();
@@ -76,7 +76,7 @@ const ProductCard = ({ product, onDelete, onUpdate, onEdit }) => {
       const token =
         localStorage.getItem('token') || sessionStorage.getItem('token');
 
-      const res = await fetch(`${API_BASE}/products/${productId}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/products/${productId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -146,7 +146,7 @@ const ProductCard = ({ product, onDelete, onUpdate, onEdit }) => {
         payload.oldPrice = Number(form.oldPrice);
       }
 
-      const res = await fetch(`${API_BASE}/products/${productId}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/products/${productId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
