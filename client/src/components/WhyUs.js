@@ -31,10 +31,17 @@ const WhyUs = () => {
 
             {/* بطاقة عائمة: عدد العملاء */}
             <div className="absolute -top-3 -left-2 sm:top-4 sm:left-4 z-10
-                            bg-white rounded-xl px-4 py-3 shadow-xl shadow-indigo-200/50
-                            border border-indigo-100 flex items-center gap-3">
-              <span className="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-700 text-xl
-                               flex items-center justify-center">👥</span>
+                            bg-white rounded-xl px-4 py-3 shadow-xl shadow-red-200/50
+                            border border-red-100 flex items-center gap-3">
+              <span className="w-10 h-10 rounded-lg bg-red-50 text-[#C41824]
+                               flex items-center justify-center">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </span>
               <div className="text-right">
                 <p className="text-xs text-slate-500">عميل يثق بنا</p>
                 <p className="text-base font-bold text-slate-800">+50,000</p>
@@ -43,10 +50,14 @@ const WhyUs = () => {
 
             {/* بطاقة عائمة: التقييم */}
             <div className="absolute -bottom-3 -right-2 sm:bottom-4 sm:right-4 z-10
-                            bg-white rounded-xl px-4 py-3 shadow-xl shadow-indigo-200/50
-                            border border-indigo-100 flex items-center gap-3">
-              <span className="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 text-xl
-                               flex items-center justify-center">⭐</span>
+                            bg-white rounded-xl px-4 py-3 shadow-xl shadow-red-200/50
+                            border border-red-100 flex items-center gap-3">
+              <span className="w-10 h-10 rounded-lg bg-amber-100 text-amber-600
+                               flex items-center justify-center">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+              </span>
               <div className="text-right">
                 <p className="text-xs text-slate-500">تقييم العملاء</p>
                 <p className="text-base font-bold text-slate-800">4.9 / 5</p>
@@ -64,7 +75,7 @@ const WhyUs = () => {
 
           {/* ===== النص ===== */}
           <div className="order-2 text-center lg:text-right">
-            <p className="text-indigo-700 font-semibold text-sm sm:text-base mb-4">
+            <p className="text-[#C41824] font-semibold text-sm sm:text-base mb-4">
               لماذا نحن
             </p>
 
@@ -83,7 +94,7 @@ const WhyUs = () => {
                 <li key={i} className="flex gap-4 items-start text-right">
                   {/* رقم */}
                   <span className="shrink-0 w-8 h-8 flex items-center justify-center text-sm font-semibold
-                                   text-indigo-700 border border-indigo-200 rounded-full bg-indigo-50">
+                                   text-[#C41824] border border-red-200 rounded-full bg-red-50">
                     {String(i + 1).padStart(2, '0')}
                   </span>
 
@@ -105,24 +116,29 @@ const WhyUs = () => {
               <Link
                 to="/products"
                 className="inline-flex items-center justify-center gap-2
-                           bg-indigo-700 text-white px-6 py-3.5 rounded-xl
+                           bg-[#C41824] text-white px-6 py-3.5 rounded-xl
                            font-semibold text-sm sm:text-base
-                           hover:bg-indigo-800 hover:-translate-y-0.5
-                           hover:shadow-lg hover:shadow-indigo-700/30
+                           hover:bg-[#A01420] hover:-translate-y-0.5
+                           hover:shadow-lg hover:shadow-red-700/30
                            transition-all duration-300"
               >
                 <span>ابدأ التسوق الآن</span>
-                <span>←</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                  <line x1="19" y1="12" x2="5" y2="12" />
+                  <polyline points="12 19 5 12 12 5" />
+                </svg>
               </Link>
 
               <Link
                 to="/contact"
                 className="inline-flex items-center justify-center gap-2
-                           text-indigo-700 border-2 border-indigo-700 px-6 py-3
+                           text-[#C41824] border-2 border-[#C41824] px-6 py-3
                            rounded-xl font-semibold text-sm sm:text-base
-                           hover:bg-indigo-700 hover:text-white transition-colors duration-200"
+                           hover:bg-[#C41824] hover:text-white transition-colors duration-200"
               >
-                <span>💬</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
                 <span>تحدث مع خبير</span>
               </Link>
             </div>

@@ -1,41 +1,47 @@
-// src/utils/telegram.js
+// client/src/utils/telegram.js
 
-// ⚙️ غيّر هذا إلى username حسابك أو bot
-export const TELEGRAM_USERNAME = '+963931633930'; // بدون @
+// ⚙️ غيّر هذا إلى username حسابك على تليجرام (بدون @)
+export const TELEGRAM_USERNAME = 'my_store_bot';
 
-// رابط واتساب للاستخدام لاحقاً (اختياري)
+// ⚙️ رقم واتساب بصيغة دولية (بدون + أو مسافات)
+// مثال: 963999000000
 export const WHATSAPP_NUMBER = '963999000000';
 
 /**
- * إنشاء رابط تليجرام مع رسالة تحتوي تفاصيل المنتج
+ * الرسالة الموحّدة للمنتج
  */
-export const buildTelegramLink = (product) => {
+const buildProductMessage = (product) => {
   const productId = product._id || product.id;
 
-  // 📝 الرسالة الثابتة
-  const message = `🛍️ مرحباً، أريد طلب هذا المنتج:
+  return `🛍️ مرحباً، أريد طلب هذا المنتج:
 
 📦 المنتج: ${product.name}
-💰 السعر: ${product.price?.toLocaleString()} ر.س${product.oldPrice ? `\n🎁 قبل الخصم: ${product.oldPrice.toLocaleString()} ر.س` : ''}
+💰 السعر: ${product.price?.toLocaleString()} ر.س${
+    product.oldPrice && product.oldPrice > product.price
+      ? `\n🎁 قبل الخصم: ${product.oldPrice.toLocaleString()} ر.س`
+      : ''
+  }
 📂 الفئة: ${product.category || 'عام'}
 
 🔗 معرف المنتج: ${productId}
 
 من فضلك أرسل لي تفاصيل الدفع والتوصيل 🙏`;
+};
 
-  // ترميز الرسالة
+/**
+ * رابط تليجرام مع الرسالة
+ */
+export const buildTelegramLink = (product) => {
+  const message = buildProductMessage(product);
   const encodedText = encodeURIComponent(message);
-
-  // ✅ الصيغة الأفضل: t.me/username?text=...
-  // ملاحظة: هذا الرابط يعمل مع المستخدمين، وليس مع البوتات (Bot يتطلب start=)
   return `https://t.me/${TELEGRAM_USERNAME}?text=${encodedText}`;
 };
 
 /**
- * رابط واتساب (بديل أو إضافي)
+ * رابط واتساب مع الرسالة
  */
 export const buildWhatsAppLink = (product) => {
-  const productId = product._id || product.id;
-  const message = `مرحباً، أريد طلب: ${product.name} - السعر ${product.price} ر.س - معرف: ${productId}`;
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  const message = buildProductMessage(product);
+  const encodedText = encodeURIComponent(message);
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedText}`;
 };

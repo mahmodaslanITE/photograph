@@ -48,36 +48,32 @@ const Footer = () => {
     },
   ];
 
-  // طرق الدفع (نصوص بديلة لأيقونات SVG)
   const paymentMethods = ['Visa', 'MasterCard', 'PayPal', 'Apple Pay', 'Google Pay'];
 
   const handleSubscribe = (e) => {
     e.preventDefault();
     if (!email) return;
-    // هنا تربطها بالـ API لاحقاً
     setSubscribed(true);
     setEmail('');
     setTimeout(() => setSubscribed(false), 4000);
   };
 
   return (
-    <footer className="bg-slate-900 text-slate-300 pt-16 pb-0">
-
-      {/* ===== قسم النشرة البريدية (فوق الفوتر) ===== */}
+<footer className="bg-gradient-to-br from-[#2d0a10] via-[#1a0a0c] to-[#0f0507] text-slate-300 pt-16 pb-0">
+      {/* ===== قسم النشرة البريدية ===== */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 sm:mb-14">
-        <div className="bg-gradient-to-l from-indigo-700 to-purple-700 rounded-2xl p-6 sm:p-8 lg:p-10
+        <div className="bg-gradient-to-l from-[#C41824] to-[#8a0f18] rounded-2xl p-6 sm:p-8 lg:p-10
                         relative overflow-hidden">
-          {/* زخارف */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
 
           <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
             <div className="text-center lg:text-right text-white">
               <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">
-                📬 اشترك في نشرتنا البريدية
+                اشترك في نشرتنا البريدية
               </h3>
-              <p className="text-indigo-100 text-sm sm:text-base">
-                كن أول من يعرف عن العروض والمنتجات الجديدة. خصم 10% على أول طلب!
+              <p className="text-red-100 text-sm sm:text-base">
+                كن أول من يعرف عن العروض والمنتجات الجديدة. خصم 10% على أول طلب.
               </p>
             </div>
 
@@ -85,9 +81,11 @@ const Footer = () => {
               {subscribed ? (
                 <div className="flex items-center justify-center gap-3 bg-green-500/20 border border-green-400/30
                                 rounded-xl px-6 py-4 text-green-100">
-                  <span className="text-2xl">✓</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="w-5 h-5">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
                   <span className="font-medium text-sm sm:text-base">
-                    تم الاشتراك بنجاح! تفقّد بريدك للحصول على كود الخصم.
+                    تم الاشتراك بنجاح. تفقّد بريدك للحصول على كود الخصم.
                   </span>
                 </div>
               ) : (
@@ -99,15 +97,15 @@ const Footer = () => {
                     placeholder="أدخل بريدك الإلكتروني"
                     required
                     className="flex-1 bg-white/10 backdrop-blur border border-white/20 rounded-xl
-                               py-3.5 px-4 text-white placeholder-indigo-200
+                               py-3.5 px-4 text-white placeholder-red-200
                                focus:outline-none focus:border-white/50 focus:bg-white/15
                                transition-all text-sm sm:text-base"
                   />
                   <button
                     type="submit"
-                    className="bg-white text-indigo-700 px-6 py-3.5 rounded-xl font-semibold
+                    className="bg-white text-[#C41824] px-6 py-3.5 rounded-xl font-semibold
                                text-sm sm:text-base whitespace-nowrap
-                               hover:bg-indigo-50 hover:-translate-y-0.5 hover:shadow-lg
+                               hover:bg-red-50 hover:-translate-y-0.5 hover:shadow-lg
                                transition-all duration-300"
                   >
                     اشترك الآن
@@ -126,10 +124,14 @@ const Footer = () => {
           {/* عمود 1: الشعار والوصف */}
           <div className="sm:col-span-2 lg:col-span-4 text-center sm:text-right">
             <Link to="/" className="flex items-center gap-3 justify-center sm:justify-start mb-4 w-fit mx-auto sm:mx-0">
-              <span className="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center text-xl font-bold">
-                🛍️
+              <span className="w-10 h-10 bg-[#C41824] text-white rounded-xl flex items-center justify-center">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
               </span>
-              <span className="text-xl font-bold text-white">متجر الأناقة</span>
+              <span className="text-xl font-bold text-white">متجر المهندس</span>
             </Link>
 
             <p className="text-slate-400 text-sm sm:text-base leading-relaxed mb-6 max-w-sm mx-auto sm:mx-0">
@@ -137,7 +139,6 @@ const Footer = () => {
               مع ضمان الجودة والإرجاع المجاني.
             </p>
 
-            {/* أيقونات التواصل */}
             <div className="flex gap-3 justify-center sm:justify-start">
               {socialLinks.map((social, i) => (
                 <a
@@ -145,7 +146,7 @@ const Footer = () => {
                   href={social.href}
                   aria-label={social.label}
                   className="w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400
-                             hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-colors duration-200"
+                             hover:bg-[#C41824] hover:text-white hover:border-[#C41824] transition-colors duration-200"
                 >
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
                     <path d={social.path} />
@@ -165,7 +166,7 @@ const Footer = () => {
                 <li key={i}>
                   <Link
                     to={link.href}
-                    className="text-slate-400 text-sm hover:text-indigo-400 transition-colors duration-200"
+                    className="text-slate-400 text-sm hover:text-[#C41824] transition-colors duration-200"
                   >
                     {link.label}
                   </Link>
@@ -184,7 +185,7 @@ const Footer = () => {
                 <li key={i}>
                   <Link
                     to={link.href}
-                    className="text-slate-400 text-sm hover:text-indigo-400 transition-colors duration-200"
+                    className="text-slate-400 text-sm hover:text-[#C41824] transition-colors duration-200"
                   >
                     {link.label}
                   </Link>
@@ -204,7 +205,7 @@ const Footer = () => {
                   {item.href ? (
                     <a
                       href={item.href}
-                      className="text-slate-400 text-sm hover:text-indigo-400 transition-colors duration-200"
+                      className="text-slate-400 text-sm hover:text-[#C41824] transition-colors duration-200"
                     >
                       <span dir={item.dir || 'auto'}>{item.text}</span>
                     </a>
@@ -237,7 +238,12 @@ const Footer = () => {
               معلومة الشحن
             </h4>
             <div className="flex items-center gap-2 justify-center sm:justify-start text-sm text-slate-400">
-              <span>🚚</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                <rect x="1" y="3" width="15" height="13" />
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                <circle cx="5.5" cy="18.5" r="2.5" />
+                <circle cx="18.5" cy="18.5" r="2.5" />
+              </svg>
               <span>شحن مجاني للطلبات فوق 200 ر.س</span>
             </div>
           </div>

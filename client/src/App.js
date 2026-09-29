@@ -5,6 +5,7 @@ import Home from "./Home";
 import Signup from "./pages/signUp";
 import Login from "./pages/Login";
 import Products from "./pages/Products";
+import Profile from "./pages/Profile";
 
   
     
@@ -18,6 +19,12 @@ function App (){
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/products" element={<Products />} />
+        <Route
+  path="/profile"
+  element={
+      <Profile />
+  }
+/>
       </Routes>
     </BrowserRouter>
         )

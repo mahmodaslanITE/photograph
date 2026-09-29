@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const API_URL = 'http://localhost:4998/api/products';
+const API_URL = `${process.env.REACT_APP_API_URL}/products`;
 
 const AddProductModal = ({ onClose, onAdd }) => {
   const [form, setForm] = useState({
@@ -9,7 +9,8 @@ const AddProductModal = ({ onClose, onAdd }) => {
     oldPrice: '',
     description: '',
     category: '',
-    image: '',
+    imageFile: null,
+    imagePreview: '',
     stock: 0,
     badge: '',
   });
@@ -22,10 +23,20 @@ const AddProductModal = ({ onClose, onAdd }) => {
     if (error) setError('');
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setForm((prev) => ({
+        ...prev,
+        imageFile: file,
+        imagePreview: URL.createObjectURL(file),
+      }));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ✅ التحقق من الحقول المطلوبة
     if (!form.name.trim() || !form.price) {
       setError('الرجاء إدخال اسم المنتج والسعر');
       return;
@@ -38,27 +49,25 @@ const AddProductModal = ({ onClose, onAdd }) => {
       const token =
         localStorage.getItem('token') || sessionStorage.getItem('token');
 
-      const payload = {
-        name: form.name.trim(),
-        price: Number(form.price),
-        description: form.description.trim(),
-        category: form.category.trim() || 'عام',
-        image: form.image.trim(),
-        stock: Number(form.stock) || 0,
-        badge: form.badge.trim(),
-      };
+      const formData = new FormData();
+      formData.append('name', form.name.trim());
+      formData.append('price', form.price);
+      formData.append('description', form.description.trim());
+      formData.append('category', form.category.trim() || 'عام');
+      formData.append('stock', form.stock || 0);
+      formData.append('badge', form.badge.trim());
+      if (form.oldPrice) formData.append('oldPrice', form.oldPrice);
 
-      if (form.oldPrice) {
-        payload.oldPrice = Number(form.oldPrice);
+      if (form.imageFile) {
+        formData.append('image', form.imageFile);
       }
 
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(payload),
+        body: formData,
       });
 
       const data = await res.json();
@@ -67,7 +76,6 @@ const AddProductModal = ({ onClose, onAdd }) => {
         throw new Error(data.message || 'فشل إضافة المنتج');
       }
 
-      // إبلاغ الأب بالمنتج الجديد
       if (onAdd) onAdd(data.data);
       onClose();
     } catch (err) {
@@ -91,9 +99,12 @@ const AddProductModal = ({ onClose, onAdd }) => {
         {/* الرأس */}
         <div className="flex items-center justify-between p-6 border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <span className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700
-                             flex items-center justify-center text-xl">
-              ➕
+            <span className="w-10 h-10 rounded-xl bg-red-50 text-[#C41824]
+                             flex items-center justify-center">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
             </span>
             <div>
               <h2 className="text-xl font-bold text-slate-800">إضافة منتج جديد</h2>
@@ -106,8 +117,12 @@ const AddProductModal = ({ onClose, onAdd }) => {
             className="w-8 h-8 flex items-center justify-center text-slate-400
                        hover:text-slate-700 hover:bg-slate-100 rounded-lg
                        transition-colors disabled:opacity-50"
+            aria-label="إغلاق"
           >
-            ✕
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
           </button>
         </div>
 
@@ -117,7 +132,11 @@ const AddProductModal = ({ onClose, onAdd }) => {
           {error && (
             <div className="p-3 rounded-lg bg-red-50 border border-red-200
                             text-red-700 text-sm flex items-start gap-2">
-              <span>⚠</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 shrink-0 mt-0.5">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
               <span>{error}</span>
             </div>
           )}
@@ -125,7 +144,7 @@ const AddProductModal = ({ onClose, onAdd }) => {
           {/* الاسم */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">
-              اسم المنتج <span className="text-red-500">*</span>
+              اسم المنتج <span className="text-[#C41824]">*</span>
             </label>
             <input
               type="text"
@@ -135,7 +154,7 @@ const AddProductModal = ({ onClose, onAdd }) => {
               required
               placeholder="مثال: لابتوب HP Pavilion 15"
               className="w-full border border-slate-200 rounded-lg py-2.5 px-4 text-sm
-                         focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+                         focus:outline-none focus:border-[#C41824] focus:ring-2 focus:ring-red-100"
             />
           </div>
 
@@ -143,7 +162,7 @@ const AddProductModal = ({ onClose, onAdd }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                السعر (ر.س) <span className="text-red-500">*</span>
+                السعر (ر.س) <span className="text-[#C41824]">*</span>
               </label>
               <input
                 type="number"
@@ -155,7 +174,7 @@ const AddProductModal = ({ onClose, onAdd }) => {
                 step="0.01"
                 placeholder="0.00"
                 className="w-full border border-slate-200 rounded-lg py-2.5 px-4 text-sm
-                           focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+                           focus:outline-none focus:border-[#C41824] focus:ring-2 focus:ring-red-100"
               />
             </div>
             <div>
@@ -171,7 +190,7 @@ const AddProductModal = ({ onClose, onAdd }) => {
                 step="0.01"
                 placeholder="اتركه فارغاً إن لم يوجد خصم"
                 className="w-full border border-slate-200 rounded-lg py-2.5 px-4 text-sm
-                           focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+                           focus:outline-none focus:border-[#C41824] focus:ring-2 focus:ring-red-100"
               />
             </div>
           </div>
@@ -180,7 +199,7 @@ const AddProductModal = ({ onClose, onAdd }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                الفئة <span className="text-red-500">*</span>
+                الفئة <span className="text-[#C41824]">*</span>
               </label>
               <input
                 type="text"
@@ -190,7 +209,7 @@ const AddProductModal = ({ onClose, onAdd }) => {
                 placeholder="مثال: إلكترونيات، هواتف، إكسسوارات"
                 list="category-suggestions"
                 className="w-full border border-slate-200 rounded-lg py-2.5 px-4 text-sm
-                           focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+                           focus:outline-none focus:border-[#C41824] focus:ring-2 focus:ring-red-100"
               />
               <datalist id="category-suggestions">
                 <option value="إلكترونيات" />
@@ -214,7 +233,7 @@ const AddProductModal = ({ onClose, onAdd }) => {
                 min="0"
                 placeholder="0"
                 className="w-full border border-slate-200 rounded-lg py-2.5 px-4 text-sm
-                           focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+                           focus:outline-none focus:border-[#C41824] focus:ring-2 focus:ring-red-100"
               />
             </div>
           </div>
@@ -231,32 +250,32 @@ const AddProductModal = ({ onClose, onAdd }) => {
               rows="3"
               placeholder="اكتب وصفاً موجزاً للمنتج..."
               className="w-full border border-slate-200 rounded-lg py-2.5 px-4 text-sm
-                         focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100
+                         focus:outline-none focus:border-[#C41824] focus:ring-2 focus:ring-red-100
                          resize-none"
             />
           </div>
 
-          {/* رابط الصورة */}
+          {/* حقل رفع الصورة */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">
-              رابط الصورة
+              صورة المنتج
             </label>
             <input
-              type="url"
-              name="image"
-              value={form.image}
-              onChange={handleChange}
-              placeholder="https://images.unsplash.com/..."
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
               className="w-full border border-slate-200 rounded-lg py-2.5 px-4 text-sm
-                         focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+                         focus:outline-none focus:border-[#C41824] focus:ring-2 focus:ring-red-100
+                         file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0
+                         file:text-sm file:font-semibold file:bg-red-50 file:text-[#C41824]
+                         hover:file:bg-red-100 cursor-pointer"
             />
-            {form.image && (
+            {form.imagePreview && (
               <div className="mt-3 flex items-start gap-3">
                 <img
-                  src={form.image}
+                  src={form.imagePreview}
                   alt="معاينة"
-                  className="w-20 h-20 object-cover rounded-lg border border-slate-200"
-                  onError={(e) => { e.target.style.display = 'none'; }}
+                  className="w-24 h-24 object-cover rounded-lg border border-slate-200"
                 />
                 <p className="text-xs text-slate-500">معاينة الصورة</p>
               </div>
@@ -275,7 +294,7 @@ const AddProductModal = ({ onClose, onAdd }) => {
               onChange={handleChange}
               placeholder="مثال: جديد، الأكثر مبيعاً، خصم 17%"
               className="w-full border border-slate-200 rounded-lg py-2.5 px-4 text-sm
-                         focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+                         focus:outline-none focus:border-[#C41824] focus:ring-2 focus:ring-red-100"
             />
           </div>
 
@@ -294,8 +313,8 @@ const AddProductModal = ({ onClose, onAdd }) => {
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 py-3 rounded-lg bg-indigo-700 text-white
-                         font-semibold hover:bg-indigo-800 transition-colors
+              className="flex-1 py-3 rounded-lg bg-[#C41824] text-white
+                         font-semibold hover:bg-[#A01420] transition-colors
                          disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {saving ? (
@@ -304,10 +323,7 @@ const AddProductModal = ({ onClose, onAdd }) => {
                   جاري الإضافة...
                 </>
               ) : (
-                <>
-                  <span>➕</span>
-                  إضافة المنتج
-                </>
+                'إضافة المنتج'
               )}
             </button>
           </div>
