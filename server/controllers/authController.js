@@ -54,3 +54,25 @@ module.exports.loginUser=asyncHandler(async(req,res)=>{
     }
   })
 })
+
+/**
+ * @desc    الحصول على بيانات المستخدم الحالي
+ * @route   GET /api/auth/me
+ * @access  Private
+ */
+module.exports.getMe = asyncHandler(async (req, res) => {
+  // req.user يأتي من middleware verifyToken
+  const user = await User.findById(req.user.id).select('-password');
+
+  if (!user) {
+    return res.status(404).json({
+      status: 'error',
+      message: 'المستخدم غير موجود',
+    });
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: user,
+  });
+});

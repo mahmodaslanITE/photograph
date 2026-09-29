@@ -16,20 +16,10 @@ module.exports.addProduct = asyncHandler(async (req, res) => {
   }
 
   const {
-    name,
-    price,
-    oldPrice,
-    description,
-    category,
-    stock,
-    image,
-    photo,
-    badge,
-    rating,
-    reviews,
+    name, price, oldPrice, description,
+    category, stock, badge, rating, reviews,
   } = req.body;
 
-  // ✅ التحقق من الحقول المطلوبة
   if (!name || !price) {
     return res.status(400).json({
       message: 'الرجاء تزويد الاسم والسعر',
@@ -37,7 +27,10 @@ module.exports.addProduct = asyncHandler(async (req, res) => {
     });
   }
 
-  // ✅ إنشاء المنتج بكل الحقول
+  // ✅ إذا كان هناك ملف صورة مرفوع، استخدم رابطه من Cloudinary
+  // إذا لم يكن هناك ملف، استخدم الرابط المرسل من الفرونت (للتوافق مع الكود القديم)
+  const imageUrl = req.file ? req.file.path : req.body.image;
+
   const new_product = await Product.create({
     name,
     price,
@@ -45,9 +38,8 @@ module.exports.addProduct = asyncHandler(async (req, res) => {
     description,
     category: category || 'عام',
     stock: stock || 0,
-    // دعم كلا الحقلين للصورة
-    image: image || photo,
-    photo: photo || image,
+    image: imageUrl,
+    photo: imageUrl, // للتوافق
     badge,
     rating: rating || 0,
     reviews: reviews || 0,
@@ -153,25 +145,26 @@ module.exports.updateProductById = asyncHandler(async (req, res) => {
     });
   }
 
-  // ✅ لا تسمح بتغيير _id
   delete req.body._id;
 
-  // ✅ تحويل الأرقام إن وُجدت
+  // ✅ إذا رُفعت صورة جديدة، استخدم رابطها
+  if (req.file) {
+    req.body.image = req.file.path;
+    req.body.photo = req.file.path;
+  }
+
+  // تحويل الأرقام
   if (req.body.price !== undefined) req.body.price = Number(req.body.price);
-  if (req.body.oldPrice !== undefined)
-    req.body.oldPrice = Number(req.body.oldPrice);
+  if (req.body.oldPrice !== undefined) req.body.oldPrice = Number(req.body.oldPrice);
   if (req.body.stock !== undefined) req.body.stock = Number(req.body.stock);
 
   const updated_product = await Product.findByIdAndUpdate(id, req.body, {
-    new: true,           // يُرجع النسخة المُحدّثة
-    runValidators: true, // ✅ يُشغّل التحقق من الـ Schema
+    new: true,
+    runValidators: true,
   });
 
   if (!updated_product) {
-    return res.status(404).json({
-      message: 'المنتج غير موجود',
-      status: 'error',
-    });
+    return res.status(404).json({ message: 'المنتج غير موجود', status: 'error' });
   }
 
   res.status(200).json({
@@ -180,7 +173,6 @@ module.exports.updateProductById = asyncHandler(async (req, res) => {
     data: updated_product,
   });
 });
-
 /**
  * @desc    حذف منتج بواسطة ID
  * @route   DELETE /api/products/:id
