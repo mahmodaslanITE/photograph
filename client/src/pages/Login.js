@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const API_URL = `${process.env.REACT_APP_API_URL}/auth/login`;
 function Login() {
-  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     email: "",

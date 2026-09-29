@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { buildTelegramLink } from '../utils/telegram';
 
 // ✅ المنفذ الموحّد
-const API_BASE = `${process.env.REACT_APP_API_URL}/api`;
 
 const ProductCard = ({ product, onDelete, onUpdate, onEdit }) => {
-  const navigate = useNavigate();
 
   // ===== حالات البطاقة =====
   const [isEditing, setIsEditing] = useState(false);
