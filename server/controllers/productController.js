@@ -17,7 +17,7 @@ module.exports.addProduct = asyncHandler(async (req, res) => {
 
   const {
     name, price, oldPrice, description,
-    category, stock, badge, rating, reviews,
+    category, stock, badge, rating, reviews,specifications,
   } = req.body;
 
   if (!name || !price) {
@@ -26,7 +26,22 @@ module.exports.addProduct = asyncHandler(async (req, res) => {
       status: 'error',
     });
   }
-
+  // ✅ تحويل المواصفات من String إلى Array
+  let parsedSpecs = [];
+  if (specifications) {
+    try {
+      parsedSpecs = typeof specifications === 'string'
+        ? JSON.parse(specifications)
+        : specifications;
+      // فلترة المواصفات الفارغة
+      parsedSpecs = parsedSpecs.filter(
+        (s) => s.label?.trim() && s.value?.trim()
+      );
+    } catch (err) {
+      console.error('Error parsing specifications:', err);
+      parsedSpecs = [];
+    }
+  }
   // ✅ إذا كان هناك ملف صورة مرفوع، استخدم رابطه من Cloudinary
   // إذا لم يكن هناك ملف، استخدم الرابط المرسل من الفرونت (للتوافق مع الكود القديم)
   const imageUrl = req.file ? req.file.path : req.body.image;
@@ -43,6 +58,10 @@ module.exports.addProduct = asyncHandler(async (req, res) => {
     badge,
     rating: rating || 0,
     reviews: reviews || 0,
+    specifications: parsedSpecs,
+
+     
+
   });
 
   res.status(201).json({
@@ -147,6 +166,21 @@ module.exports.updateProductById = asyncHandler(async (req, res) => {
 
   delete req.body._id;
 
+    // ✅ تحويل المواصفات
+    if (req.body.specifications) {
+      try {
+        let parsedSpecs = typeof req.body.specifications === 'string'
+          ? JSON.parse(req.body.specifications)
+          : req.body.specifications;
+        req.body.specifications = parsedSpecs.filter(
+          (s) => s.label?.trim() && s.value?.trim()
+        );
+      } catch (err) {
+        console.error('Error parsing specifications:', err);
+        delete req.body.specifications;
+      }
+    }
+  
   // ✅ إذا رُفعت صورة جديدة، استخدم رابطها
   if (req.file) {
     req.body.image = req.file.path;

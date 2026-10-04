@@ -61,6 +61,13 @@ oldPrice: {
     type: String,
     trim: true,
   },
+    specifications: [
+      {
+        label: { type: String, required: true, trim: true },
+        value: { type: String, required: true, trim: true },
+      },
+    ],
+  
 }, { timestamps: true });
 
 // فهرس للبحث السريع حسب الفئة
