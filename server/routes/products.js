@@ -6,7 +6,7 @@ const router=express.Router();
 
 router.post('/',verifyToken,upload.single('image'),addProduct);
 router.get('/',getAllProducts);
-router.get('/:id',verifyToken,getProductById);
+router.get('/:id',getProductById);
 router.put('/:id',verifyToken,upload.single('image'),updateProductById);
 router.delete('/:id',verifyToken,deleteProductById);
 module.exports=router
