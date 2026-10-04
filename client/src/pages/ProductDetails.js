@@ -13,10 +13,21 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
- 
+
+  // ✅ حالة تعديل المواصفات
+  const [isEditingSpecs, setIsEditingSpecs] = useState(false);
+  const [specsForm, setSpecsForm] = useState([]);
+  const [savingSpecs, setSavingSpecs] = useState(false);
+  const [specsError, setSpecsError] = useState('');
+
+  // 🔑 التحقق من صلاحيات الأدمن
+  const user =
+    JSON.parse(localStorage.getItem('user') || 'null') ||
+    JSON.parse(sessionStorage.getItem('user') || 'null');
+  const isAdmin = user?.isAdmin === true || user?.role === 'admin';
 
   // ============================================================
-  // 📥 جلب المنتج من الـ API
+  // 📥 جلب المنتج
   // ============================================================
   useEffect(() => {
     const fetchProduct = async () => {
@@ -42,6 +53,7 @@ const ProductDetails = () => {
         }
 
         setProduct(data.data);
+        setSpecsForm(data.data.specifications || []);
       } catch (err) {
         console.error('Fetch product error:', err);
         setError(err.message || 'تعذّر الاتصال بالخادم');
@@ -52,6 +64,79 @@ const ProductDetails = () => {
 
     if (id) fetchProduct();
   }, [id]);
+
+  // ============================================================
+  // ✅ دوال تعديل المواصفات
+  // ============================================================
+  const handleOpenEditSpecs = () => {
+    setSpecsForm(product.specifications || []);
+    setSpecsError('');
+    setIsEditingSpecs(true);
+  };
+
+  const handleCloseEditSpecs = () => {
+    if (savingSpecs) return;
+    setIsEditingSpecs(false);
+    setSpecsError('');
+  };
+
+  const handleAddSpec = () => {
+    setSpecsForm((prev) => [...prev, { label: '', value: '' }]);
+  };
+
+  const handleRemoveSpec = (index) => {
+    setSpecsForm((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSpecChange = (index, field, value) => {
+    setSpecsForm((prev) =>
+      prev.map((spec, i) =>
+        i === index ? { ...spec, [field]: value } : spec
+      )
+    );
+  };
+
+  const handleSaveSpecs = async () => {
+    setSavingSpecs(true);
+    setSpecsError('');
+
+    try {
+      const token =
+        localStorage.getItem('token') || sessionStorage.getItem('token');
+
+      // فلترة المواصفات الفارغة
+      const cleaned = specsForm.filter(
+        (s) => s.label?.trim() && s.value?.trim()
+      );
+
+      const formData = new FormData();
+      formData.append('specifications', JSON.stringify(cleaned));
+
+      const res = await fetch(`${API_URL}/${id}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'فشل حفظ المواصفات');
+      }
+
+      // تحديث المنتج في الواجهة
+      setProduct(data.data);
+      setSpecsForm(data.data.specifications || []);
+      setIsEditingSpecs(false);
+    } catch (err) {
+      console.error('Save specs error:', err);
+      setSpecsError(err.message || 'حدث خطأ أثناء الحفظ');
+    } finally {
+      setSavingSpecs(false);
+    }
+  };
 
   // ============================================================
   // نجوم التقييم
@@ -240,10 +325,29 @@ const ProductDetails = () => {
                 </div>
               )}
 
-              {/* المواصفات */}
-              {product.specifications && product.specifications.length > 0 && (
-                <div className="mb-6">
-                  <h3 className="text-sm font-semibold text-slate-700 mb-3">المواصفات</h3>
+              {/* ✅ المواصفات (مع زر تعديل للأدمن) */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold text-slate-700">المواصفات</h3>
+
+                  {/* 🔒 زر التعديل — للأدمن فقط */}
+                  {isAdmin && (
+                    <button
+                      type="button"
+                      onClick={handleOpenEditSpecs}
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold
+                                 text-[#C41824] hover:text-[#A01420] transition-colors"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                      </svg>
+                      تعديل المواصفات
+                    </button>
+                  )}
+                </div>
+
+                {product.specifications && product.specifications.length > 0 ? (
                   <div className="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
                     {product.specifications.map((spec, i) => (
                       <div
@@ -258,8 +362,12 @@ const ProductDetails = () => {
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
+                ) : (
+                  <p className="text-sm text-slate-400 text-center py-4 bg-slate-50 rounded-xl border border-slate-200">
+                    لا توجد مواصفات لهذا المنتج
+                  </p>
+                )}
+              </div>
 
               {/* المخزون */}
               <div className="mb-6 flex items-center gap-2 text-sm">
@@ -322,6 +430,162 @@ const ProductDetails = () => {
           </div>
         </div>
       </main>
+
+      {/* ============================================================ */}
+      {/* ✅ نافذة تعديل المواصفات */}
+      {/* ============================================================ */}
+      {isEditingSpecs && (
+        <div
+          className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm
+                     flex items-center justify-center p-4 overflow-y-auto"
+          onClick={handleCloseEditSpecs}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full my-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* الرأس */}
+            <div className="flex items-center justify-between p-6 border-b border-slate-100">
+              <div className="flex items-center gap-3">
+                <span className="w-10 h-10 rounded-xl bg-red-50 text-[#C41824]
+                                 flex items-center justify-center">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                </span>
+                <div>
+                  <h2 className="text-xl font-bold text-slate-800">تعديل المواصفات</h2>
+                  <p className="text-xs text-slate-500">{product.name}</p>
+                </div>
+              </div>
+              <button
+                onClick={handleCloseEditSpecs}
+                disabled={savingSpecs}
+                className="w-8 h-8 flex items-center justify-center text-slate-400
+                           hover:text-slate-700 hover:bg-slate-100 rounded-lg
+                           transition-colors disabled:opacity-50"
+                aria-label="إغلاق"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+
+            {/* المحتوى */}
+            <div className="p-6 space-y-4">
+              {specsError && (
+                <div className="p-3 rounded-lg bg-red-50 border border-red-200
+                                text-red-700 text-sm flex items-start gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 shrink-0 mt-0.5">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg>
+                  <span>{specsError}</span>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-slate-600">
+                  {specsForm.length === 0
+                    ? 'لا توجد مواصفات حالياً'
+                    : `${specsForm.length} مواصفة`}
+                </p>
+                <button
+                  type="button"
+                  onClick={handleAddSpec}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold
+                             text-[#C41824] hover:text-[#A01420] transition-colors"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  إضافة مواصفة
+                </button>
+              </div>
+
+              {specsForm.length === 0 ? (
+                <div className="text-center py-8 bg-slate-50 rounded-xl border border-dashed border-slate-300">
+                  <p className="text-sm text-slate-500 mb-3">
+                    لا توجد مواصفات. اضغط "إضافة مواصفة" للبدء.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {specsForm.map((spec, index) => (
+                    <div key={index} className="flex gap-2 items-center">
+                      <input
+                        type="text"
+                        value={spec.label}
+                        onChange={(e) => handleSpecChange(index, 'label', e.target.value)}
+                        placeholder="المواصفة (مثال: اللون)"
+                        className="flex-1 border border-slate-200 rounded-lg py-2.5 px-3 text-sm
+                                   focus:outline-none focus:border-[#C41824] focus:ring-2 focus:ring-red-100"
+                      />
+                      <input
+                        type="text"
+                        value={spec.value}
+                        onChange={(e) => handleSpecChange(index, 'value', e.target.value)}
+                        placeholder="القيمة (مثال: أزرق)"
+                        className="flex-1 border border-slate-200 rounded-lg py-2.5 px-3 text-sm
+                                   focus:outline-none focus:border-[#C41824] focus:ring-2 focus:ring-red-100"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveSpec(index)}
+                        className="w-10 h-10 flex items-center justify-center shrink-0
+                                   text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        aria-label="حذف المواصفة"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                          <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* الأزرار */}
+            <div className="flex gap-3 p-6 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={handleCloseEditSpecs}
+                disabled={savingSpecs}
+                className="flex-1 py-3 rounded-lg border border-slate-200 text-slate-700
+                           font-semibold hover:bg-slate-50 transition-colors
+                           disabled:opacity-50"
+              >
+                إلغاء
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveSpecs}
+                disabled={savingSpecs}
+                className="flex-1 py-3 rounded-lg bg-[#C41824] text-white
+                           font-semibold hover:bg-[#A01420] transition-colors
+                           disabled:opacity-60 flex items-center justify-center gap-2"
+              >
+                {savingSpecs ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    جاري الحفظ...
+                  </>
+                ) : (
+                  'حفظ التعديلات'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

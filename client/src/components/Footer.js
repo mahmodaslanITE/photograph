@@ -131,7 +131,7 @@ const Footer = () => {
                   <path d="M16 10a4 4 0 0 1-8 0" />
                 </svg>
               </span>
-              <span className="text-xl font-bold text-white">متجر المهندس</span>
+              <span className="text-xl font-bold text-white">متجر بلوتو</span>
             </Link>
 
             <p className="text-slate-400 text-sm sm:text-base leading-relaxed mb-6 max-w-sm mx-auto sm:mx-0">

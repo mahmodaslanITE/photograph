@@ -8,7 +8,7 @@ const services = [
     color: 'from-[#C41824] to-[#8a0f18]',
     bg: 'bg-red-50',
     text: 'text-[#C41824]',
-    href: '/products?category=cameras',
+    href: '/products?category=كاميرات',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-7 h-7 sm:w-8 sm:h-8">
         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
@@ -22,7 +22,7 @@ const services = [
     color: 'from-[#C41824] to-[#8a0f18]',
     bg: 'bg-red-50',
     text: 'text-[#C41824]',
-    href: '/products?category=lenses',
+    href: '/products?category=كاميرات',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-7 h-7 sm:w-8 sm:h-8">
         <circle cx="12" cy="12" r="10" />
@@ -37,7 +37,7 @@ const services = [
     color: 'from-[#C41824] to-[#8a0f18]',
     bg: 'bg-red-50',
     text: 'text-[#C41824]',
-    href: '/products?category=lighting',
+    href: '/products?category=إلكترونيات',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-7 h-7 sm:w-8 sm:h-8">
         <path d="M9 18h6" />
@@ -52,7 +52,7 @@ const services = [
     color: 'from-[#C41824] to-[#8a0f18]',
     bg: 'bg-red-50',
     text: 'text-[#C41824]',
-    href: '/products?category=video',
+    href: '/products?category=معدات فيديو',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-7 h-7 sm:w-8 sm:h-8">
         <polygon points="23 7 16 12 23 17 23 7" />
@@ -66,7 +66,7 @@ const services = [
     color: 'from-[#C41824] to-[#8a0f18]',
     bg: 'bg-red-50',
     text: 'text-[#C41824]',
-    href: '/products?category=accessories',
+    href: '/products?category=إكسسوارات',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-7 h-7 sm:w-8 sm:h-8">
         <path d="M20 7h-4V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
@@ -80,7 +80,7 @@ const services = [
     color: 'from-[#C41824] to-[#8a0f18]',
     bg: 'bg-red-50',
     text: 'text-[#C41824]',
-    href: '/products?category=editing',
+    href: '/products?category=معدات مونتاج',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-7 h-7 sm:w-8 sm:h-8">
         <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />

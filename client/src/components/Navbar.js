@@ -76,7 +76,7 @@ const Navbar = () => {
             </svg>
           </span>
           <span className="text-lg lg:text-xl font-bold text-[#C41824] whitespace-nowrap">
-      متجر المهندس
+      متجر بلوتو
           </span>
         </Link>
 
