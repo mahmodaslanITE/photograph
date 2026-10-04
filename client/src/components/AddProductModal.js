@@ -13,6 +13,7 @@ const AddProductModal = ({ onClose, onAdd }) => {
     imagePreview: '',
     stock: 0,
     badge: '',
+    specifications: [], // ✅ مصفوفة المواصفات
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -32,6 +33,30 @@ const AddProductModal = ({ onClose, onAdd }) => {
         imagePreview: URL.createObjectURL(file),
       }));
     }
+  };
+
+  // ====== ✅ دوال المواصفات ======
+  const handleAddSpec = () => {
+    setForm((prev) => ({
+      ...prev,
+      specifications: [...prev.specifications, { label: '', value: '' }],
+    }));
+  };
+
+  const handleRemoveSpec = (index) => {
+    setForm((prev) => ({
+      ...prev,
+      specifications: prev.specifications.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleSpecChange = (index, field, value) => {
+    setForm((prev) => ({
+      ...prev,
+      specifications: prev.specifications.map((spec, i) =>
+        i === index ? { ...spec, [field]: value } : spec
+      ),
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -60,6 +85,14 @@ const AddProductModal = ({ onClose, onAdd }) => {
 
       if (form.imageFile) {
         formData.append('image', form.imageFile);
+      }
+
+      // ✅ إرسال المواصفات كـ JSON String
+      const cleanedSpecs = form.specifications.filter(
+        (s) => s.label.trim() && s.value.trim()
+      );
+      if (cleanedSpecs.length > 0) {
+        formData.append('specifications', JSON.stringify(cleanedSpecs));
       }
 
       const res = await fetch(API_URL, {
@@ -253,6 +286,69 @@ const AddProductModal = ({ onClose, onAdd }) => {
                          focus:outline-none focus:border-[#C41824] focus:ring-2 focus:ring-red-100
                          resize-none"
             />
+          </div>
+
+          {/* ✅ المواصفات الديناميكية */}
+          <div className="border border-slate-200 rounded-lg p-4 bg-slate-50/50">
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-sm font-medium text-slate-700">
+                المواصفات
+              </label>
+              <button
+                type="button"
+                onClick={handleAddSpec}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold
+                           text-[#C41824] hover:text-[#A01420] transition-colors"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                إضافة مواصفة
+              </button>
+            </div>
+
+            {form.specifications.length === 0 ? (
+              <p className="text-xs text-slate-400 text-center py-3">
+                لا توجد مواصفات. اضغط "إضافة مواصفة" لإضافة مواصفة جديدة.
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {form.specifications.map((spec, index) => (
+                  <div key={index} className="flex gap-2 items-center">
+                    <input
+                      type="text"
+                      value={spec.label}
+                      onChange={(e) => handleSpecChange(index, 'label', e.target.value)}
+                      placeholder="المواصفة (مثال: المعالج)"
+                      className="flex-1 border border-slate-200 rounded-lg py-2 px-3 text-sm
+                                 focus:outline-none focus:border-[#C41824] focus:ring-2 focus:ring-red-100"
+                    />
+                    <input
+                      type="text"
+                      value={spec.value}
+                      onChange={(e) => handleSpecChange(index, 'value', e.target.value)}
+                      placeholder="القيمة (مثال: Intel Core i7)"
+                      className="flex-1 border border-slate-200 rounded-lg py-2 px-3 text-sm
+                                 focus:outline-none focus:border-[#C41824] focus:ring-2 focus:ring-red-100"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSpec(index)}
+                      className="w-9 h-9 flex items-center justify-center shrink-0
+                                 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                      aria-label="حذف المواصفة"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                        <path d="M3 6h18" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* حقل رفع الصورة */}

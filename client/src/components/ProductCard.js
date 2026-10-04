@@ -537,6 +537,10 @@ const ProductCard = ({ product, onDelete, onUpdate, onEdit }) => {
                                bg-slate-100 text-slate-400 cursor-not-allowed">
                 غير متوفر
               </span>
+              </div>
+
+            )}
+
               <Link
                 to={`/products/${productId}`}
                 aria-label={`عرض تفاصيل ${product.name}`}
@@ -547,8 +551,6 @@ const ProductCard = ({ product, onDelete, onUpdate, onEdit }) => {
                   <path d="M9 5l7 7-7 7" />
                 </svg>
               </Link>
-            </div>
-          )}
 
           {/* أزرار الأدمن */}
           {isAdmin && (
