@@ -179,7 +179,7 @@ const Hero = () => {
                             aspect-[4/5] sm:aspect-[4/4] lg:aspect-[4/5] bg-slate-100">
               <img
                 src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800"
-                alt="تسوّق في متجر بلوتو"
+                alt="تسوّق في متجر ITE"
                 className="w-full h-full object-cover"
                 loading="eager"
               />

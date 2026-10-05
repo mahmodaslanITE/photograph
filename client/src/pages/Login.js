@@ -132,7 +132,7 @@ function Login() {
               <path d="M16 10a4 4 0 0 1-8 0" />
             </svg>
           </span>
-          <span className="text-2xl font-bold text-white">متجر الأناقة</span>
+          <span className="text-2xl font-bold text-white">متجر ITE</span>
         </Link>
 
         {/* الرسالة */}
@@ -164,7 +164,7 @@ function Login() {
         </div>
 
         <p className="relative text-red-200/70 text-sm">
-          © 2026 متجر الأناقة. جميع الحقوق محفوظة.
+          © 2026 متجر ITE. جميع الحقوق محفوظة.
         </p>
       </div>
 
@@ -181,7 +181,7 @@ function Login() {
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
             </span>
-            <span className="text-xl font-bold text-[#C41824]">متجر الأناقة</span>
+            <span className="text-xl font-bold text-[#C41824]">متجر ITE</span>
           </Link>
 
           {/* العنوان */}

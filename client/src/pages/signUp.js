@@ -148,7 +148,7 @@ function Signup() {
               <path d="M16 10a4 4 0 0 1-8 0" />
             </svg>
           </span>
-          <span className="text-2xl font-bold text-white">متجر الأناقة</span>
+          <span className="text-2xl font-bold text-white">متجر ITE</span>
         </Link>
 
         {/* الرسالة */}
@@ -157,7 +157,7 @@ function Signup() {
             تسوّق بذكاء، استلم بسرعة
           </h2>
           <p className="text-red-100 text-lg leading-relaxed mb-8">
-            انضم إلى أكثر من 50,000 عميل يثقون بمتجر الأناقة لأفضل المنتجات وأسرع توصيل.
+            انضم إلى أكثر من 50,000 عميل يثقون بمتجر ITE لأفضل المنتجات وأسرع توصيل.
           </p>
 
           <ul className="space-y-4">
@@ -180,7 +180,7 @@ function Signup() {
         </div>
 
         <p className="relative text-red-200/70 text-sm">
-          © 2026 متجر الأناقة. جميع الحقوق محفوظة.
+          © 2026 متجر ITE. جميع الحقوق محفوظة.
         </p>
       </div>
 
@@ -197,7 +197,7 @@ function Signup() {
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
             </span>
-            <span className="text-xl font-bold text-[#C41824]">متجر الأناقة</span>
+            <span className="text-xl font-bold text-[#C41824]">متجر ITE</span>
           </Link>
 
           {/* العنوان */}

@@ -131,7 +131,7 @@ const Footer = () => {
                   <path d="M16 10a4 4 0 0 1-8 0" />
                 </svg>
               </span>
-              <span className="text-xl font-bold text-white">متجر بلوتو</span>
+              <span className="text-xl font-bold text-white">متجر ITE</span>
             </Link>
 
             <p className="text-slate-400 text-sm sm:text-base leading-relaxed mb-6 max-w-sm mx-auto sm:mx-0">
@@ -255,7 +255,7 @@ const Footer = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-right">
             <p className="text-slate-500 text-xs sm:text-sm">
-              © 2026 متجر الأناقة. جميع الحقوق محفوظة.
+              © 2026 متجر ITE. جميع الحقوق محفوظة.
             </p>
             <ul className="flex gap-5 text-xs sm:text-sm list-none">
               <li>

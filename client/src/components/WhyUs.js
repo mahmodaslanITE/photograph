@@ -67,7 +67,7 @@ const WhyUs = () => {
             {/* الصورة الرئيسية */}
             <img
               src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800"
-              alt="معدات تصوير احترافية في متجر الأناقة"
+              alt="معدات تصوير احترافية في متجر ITE"
               loading="lazy"
               className="w-full h-[340px] sm:h-[420px] lg:h-[500px] object-cover rounded-2xl shadow-xl shadow-slate-200"
             />
